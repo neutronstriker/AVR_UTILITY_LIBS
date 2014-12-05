@@ -1,0 +1,18 @@
+LCD Lib Keywords (function names):
+
+lcd_init //initialises the lcd
+lcd_clear //clears the lcd
+lcd_print //prints a string
+lcd_printnum //prints a number
+lcd_data //sends a data byte to the lcd
+lcd_cmd //sends a cmd byte to the lcd
+
+UART Lib Keywords (function names):
+
+uart_init //initialises the UART
+uart_read //read a byte from the UART
+uart_write //write a byte to the UART
+u_print //print a string to the UART
+u_print_p // print a string stored in PROGRAM MEMORY
+uart_printnum //print an number
+hexbyte //print a number in hexadecimal format
