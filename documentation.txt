@@ -1,0 +1,45 @@
+SIPO LCD library:
+
+First we need to define 4 key elements before we can use the SIPO(Serial-in-parallel-out SR) LCD library.
+
+#define SIPO_PORT B // this value can be any port name present in the particular AVR used for the program.
+#define SPIN 3 //define this value to a number which is the port pin defined above to be connected to DATA pin of SR, here it is PB3  
+#defien STB 4 //this will be the PORT Pin number defined above connected to STROBE pin of SR, here it is PB4
+#define CLK 5 //this will be the port pin number defined above connected to CLK pin of SR, here it is PB5
+
+lcd_init(); //this function initialises the PORT pins defined above to appropriate state.
+
+lcd_data(uchar); //send a data byte to lcd
+
+lcd_cmd(uchar); //send a cmd byte to lcd
+
+lcd_clear(); //clears the lcd
+
+lcd_print(uchar *string, uchar position); //prints a string, the second argument is optional. If a valid second argument if given
+//it prints the string starting from the address location given in the argument. Otherwise it will print from 0x80 location.
+//this function doesn't clear the lcd so you have to manually take care of that.
+
+lcd_printnum(long number); //print a number on the lcd. prints from the current cursor position.
+
+
+UART library:
+
+First we need to define the F_CPU (Clk value of the AVR)
+
+for example #define F_CPU 16000000UL //The avr is running at 16MHZ
+
+uart_init(ulong baudrate); //returns 1 if the baudrate can be used with acceptable error or returns 0 if the error is more than
+//acceptable value.
+
+uart_read(); //reads a byte from the uart and returns it.
+
+uart_write(uchar); //writes a byte to the uart
+
+u_print(uchar *string); //prints a string into the UART
+
+u_printPMEM(uchar *string); //prints a string stored in the program memory, very useful in save RAM
+//but is not usefull for strings that are generated during runtime.
+
+uart_printnum(long); //prints a number
+
+hexbyte(uchar); //prints a byte in hexadecimal form.
