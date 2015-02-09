@@ -2,8 +2,8 @@
 #define _DATA_STRUCTURES_ 1
 
 //Important : Please be carefull while using stack as multiple functions are using the same stack so use it carefully.
-//This cannot be used as a alternative to the default stack of the processor, because multiple programs can 
-//modify the TOP and BOTTOM value. But it can be used in functions where data processing involves use of 
+//This cannot be used as a alternative to the default stack of the processor, because multiple programs can
+//modify the TOP and BOTTOM value. But it can be used in functions where data processing involves use of
 //stack but it completes its all operation along with retrieving data from the stack without interruption.
 
 //It means you can call a function which will load data into the stack and get back all the data within the same
@@ -15,7 +15,7 @@ email:striker.dbz[at]hotmail.com
 
 The MIT License (MIT)
 
-Copyright (c) <year> <copyright holders>
+Copyright (c) 2014 N.Srinivas a.k.a. NeutroN StrikeR
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
