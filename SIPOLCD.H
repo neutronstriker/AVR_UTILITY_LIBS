@@ -14,12 +14,12 @@
 	Author : N.Srinivas (a.k.a NeutroN StrikeR)
 
 	Date : 19.06.2014
-	
+
 	email: striker.dbz[at]hotmail.com
-	
+
 	The MIT License (MIT)
 
-Copyright (c) <year> <copyright holders>
+Copyright (c) 2014 N.Srinivas a.k.a. NeutroN StrikeR
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -42,10 +42,10 @@ THE SOFTWARE.
 	*/
 
 
-#ifdef SIPO_PORT //by doing this i just define the PORT to which SIPO LCD is 
+#ifdef SIPO_PORT //by doing this i just define the PORT to which SIPO LCD is
 				//connected and PORT and DDR are defined automatically
-				
-				//also added a line in LCD Init function to set SIPO pins 
+
+				//also added a line in LCD Init function to set SIPO pins
 				//as output
 
 #define SIPO_CONCAT(a, b)   a ## b
@@ -128,9 +128,9 @@ void printnum(long int number)
 
 
 
-/* This program demonstrates True 3 pin operation of LCD using the strobe pin, serial in pin, and CLK pin 
+/* This program demonstrates True 3 pin operation of LCD using the strobe pin, serial in pin, and CLK pin
 and all pins of lcd are directly connected to SIPO only. The data for enable and RS are also coupled
-into the SIPO and the lCD is driven in 4 bit mode. The strobe pin is utilised to send the enable CLK to 
+into the SIPO and the lCD is driven in 4 bit mode. The strobe pin is utilised to send the enable CLK to
 the lcd as described in the working below.
 
 Author : N.Srinivas a.k.a NeutroN StrikeR
@@ -139,17 +139,17 @@ Date : 01-08-2014
 											*/
 
 
-void SIPO_send(unsigned char var) // you may try to make these functions inline so that this might give a performance 
+void SIPO_send(unsigned char var) // you may try to make these functions inline so that this might give a performance
 {									//boost by decreasing use of pointers and ram. but this will increase however increase
 									//size of the program, you have to keep that in mind.
 	unsigned char i;
-	
+
 	for(i=0;i<8;i++)
 	{
 		if(var & (1<<7))
 		SIPO |= (1<<SPIN);
 
-		else 
+		else
 		SIPO &= ~(1<<SPIN);
 
 		SIPO |= (1<<CLK);
@@ -160,26 +160,26 @@ void SIPO_send(unsigned char var) // you may try to make these functions inline 
 		_delay_us(1);
 
 		var = var<<1;
-	}	
+	}
 
 }
 
 void send_nibble(unsigned char x)  //try to make this also inline if necessary
 {
 	x |= (1<<en); // set en pin as 1
-	
+
 	SIPO_send(x); //send the data through SIPO
-	
+
 	SIPO |= (1<<STB); //after sending enable the STROBE so that data is now available on the data pins
 
 	_delay_ms(1); //give delay of 10ms for enable change CLK
-	
+
 	SIPO &= ~(1<<STB);//clear the strobe now
 
 	x &= ~(1<<en); // now make the enable pin of lcd as 0
-		
+
 	SIPO_send(x); // again send new data in which only enable pin state of lcd is changed
-					
+
 	SIPO |= (1<<STB); //again set the strobe
 	_delay_ms(1); //delay 10ms
 	SIPO &= ~(1<<STB); // clear the strobe
@@ -193,17 +193,17 @@ void lcd_cmd(unsigned char var)
 	unsigned char x;
 
 //send higher nibble
-	x = 0xf0 & var; //get higher nibble into x  
-	
+	x = 0xf0 & var; //get higher nibble into x
+
 	x &= ~(1<<rs); 	//set the rs pin as 0
 	send_nibble(x); //enable pin clocking mechanism is contained in nibble fucntion
 
 //now send lower nibble
 	x = 0xf0 & (var<<4);   // now repeat same process for lower nibble
-	
-	x &= ~(1<<rs); 	
+
+	x &= ~(1<<rs);
 	send_nibble(x);
-	
+
 //to send a cmd or data byte delay is 2 * 2.16ms = 4.32ms
 
 //so data rate is 1/4.32ms = 231 char's /second ; good enough for our display
@@ -217,18 +217,18 @@ void lcd_data(unsigned char var)
 	unsigned char x;
 
 //send higher nibble
-	x = 0xf0 & var;  
-	
-	x |= (1<<rs); 	
+	x = 0xf0 & var;
+
+	x |= (1<<rs);
 	send_nibble(x);
 
 //now send lower nibble
-	x = 0xf0 & (var<<4);  
-	
-	x |= (1<<rs); 	
+	x = 0xf0 & (var<<4);
+
+	x |= (1<<rs);
 	send_nibble(x);
 
-	
+
 }
 
 void lcd_init()
@@ -249,7 +249,7 @@ SIPODDR |= (1<<STB) | (1<<SPIN) | (1<<CLK);
 	_delay_us(50);
 	cmd(0x28);//the real function set command
 	_delay_us(50);
-	cmd(0x08);//turn off display curcor, blink
+	cmd(0x08);//turn off display cursor, blink
 	_delay_us(100);
 	cmd(0x01);//clear display
 	_delay_ms(5);//allow enough time to write zeros to the whole ddram and cgram
@@ -271,15 +271,15 @@ void lcd_print(char* msg,...)
 {
 	int x;
 	va_list arg_list;//declare "arg_list" a variable of type va_list
-	va_start(arg_list,msg);//initialize the variable with "va_start" which takes 
-							//two arguments the list and first argument in this function		
-	x=va_arg(arg_list,int);//when va_arg is called with the argument of list and a datatype 
+	va_start(arg_list,msg);//initialize the variable with "va_start" which takes
+							//two arguments the list and first argument in this function
+	x=va_arg(arg_list,int);//when va_arg is called with the argument of list and a datatype
 						// it returns next value of that type in the list if it exists
 						//if it doesn't exist if returns NULL or 0 (tested in Turbo C)
 	if(x>=0x80 && x<=0xcf)//so i don't want to check because i only want one argument to be
 	print(msg,x);	//optional so i directly get the address and specify which should be
 						//the next argument in the calling function(caller)
-	
+
 	else
 	print(msg,0x80);
 
@@ -294,7 +294,7 @@ void print(char* sym,unsigned char startadd)
 
 	if(startadd<0x80 || startadd>0xcf)
 		return;
-	else 
+	else
 		cmd(startadd);
 
 	while(sym[i]!='\0')
@@ -310,7 +310,7 @@ void print(char* sym,unsigned char startadd)
 			cmd(0x01);
 			startadd=0x80;
 		}
-	
+
 		data(sym[i]);
 		i++;
 		startadd++;
@@ -322,30 +322,30 @@ void print(char* sym,unsigned char startadd)
 void lcd_printnum(long int number)
 {
 	unsigned char temp=0;
-	
+
 	if(number == 0)
 	{
 		lcd_data('0');
 		return;
 	}
-	
+
 	if(number < 0)
-	{	
+	{
 		number = number * -1;
 		lcd_data('-');
 	}
-		
+
 	while(number > 0)
-	{	
+	{
 		temp = number%10;
 		temp += 0x30;
 		push(temp);
-		number = number/10; 
+		number = number/10;
 	}
 
 	for(int8_t i=top;i>=0;i--)
 		lcd_data(stack[i]);
-	
+
 	top = -1; // re-initialize stack pointer
 
 }
